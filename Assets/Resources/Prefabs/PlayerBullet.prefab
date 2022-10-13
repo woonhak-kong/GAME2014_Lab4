@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2727552653020565627}
   - component: {fileID: 2727552653020565626}
   - component: {fileID: 2727552653020565629}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: PlayerBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,4 +155,4 @@ MonoBehaviour:
     vertical:
       min: -6
       max: 6
-  bulletManager: {fileID: 0}
+  type: 0

@@ -18,13 +18,6 @@ public class BulletFactory : MonoBehaviour
     void Start()
     {
         Initialize();
-
-        GameObject test = Instantiate(bulletPrefab, Vector3.zero, Quaternion.identity);
-        test.GetComponent<BuilletBehavior>().speed = 0.0f;
-
-        test.GetComponent<SpriteRenderer>().sprite = enemyBulletSprite;
-
-
     }
 
     private void Initialize()
@@ -37,24 +30,21 @@ public class BulletFactory : MonoBehaviour
 
     public GameObject CreateBullet(BulletType type = BulletType.PLAYER)
     {
-        GameObject bullet = null;
+        GameObject bullet = Instantiate(bulletPrefab, Vector3.zero, Quaternion.identity, BulletParent);
         switch (type)
         {
             case BulletType.PLAYER:
-                bullet = Instantiate(bulletPrefab, Vector3.zero, Quaternion.identity, BulletParent);
-                bullet.GetComponent<BuilletBehavior>().speed = 0.0f;
                 bullet.GetComponent<SpriteRenderer>().sprite = playerBulletSprite;
                 bullet.GetComponent<BuilletBehavior>().bulletDirection = BulletDirection.UP;
-                bullet.SetActive(false);
+
                 break;
             case BulletType.ENEMY:
-                bullet = Instantiate(bulletPrefab, Vector3.zero, Quaternion.identity, BulletParent);
-                bullet.GetComponent<BuilletBehavior>().speed = 0.0f;
                 bullet.GetComponent<SpriteRenderer>().sprite = enemyBulletSprite;
                 bullet.GetComponent<BuilletBehavior>().bulletDirection = BulletDirection.DOWN;
-                bullet.SetActive(false);
                 break;
         }
+        bullet.GetComponent<BuilletBehavior>().type = type;
+        bullet.SetActive(false);
         return bullet;
     }
 

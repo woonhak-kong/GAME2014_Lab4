@@ -6,14 +6,19 @@ public class BulletManager : MonoBehaviour
 {
     public static BulletManager Instance { get; private set; }
 
-    public Queue<GameObject> bulletPool;
-    public GameObject bulletPrefab;
+    public Queue<GameObject> playerBulletPool;
+    public Queue<GameObject> enemyBulletPool;
     public GameObject bulletParent;
-    public int bulletFired = 0;
-    public int bulletLeft = 0;
+    public int playerBulletFired = 0;
+    public int playerBulletLeft = 0;
+    public int enemyBulletFired = 0;
+    public int enemyBulletLeft = 0;
     [Range(10, 200)]
-    public int bulletNumber = 15;
+    public int playerBulletNumber = 50;
+    [Range(10, 200)]
+    public int enemyBulletNumber = 50;
 
+    public BulletFactory bulletFactory;
 
     private void Awake()
     {
@@ -31,48 +36,79 @@ public class BulletManager : MonoBehaviour
     void Start()
     {
 
-        bulletPool = new Queue<GameObject>();
+        playerBulletPool = new Queue<GameObject>();
+        enemyBulletPool = new Queue<GameObject>();
+        bulletFactory = FindObjectOfType<BulletFactory>();
         BuildBulletPool();
     }
 
     void BuildBulletPool()
     {
-        for (int i = 0; i < bulletNumber; i++)
+        for (int i = 0; i < playerBulletNumber; i++)
         {
-            CreateBullet();
+            playerBulletPool.Enqueue(bulletFactory.CreateBullet(BulletType.PLAYER));
+            playerBulletLeft++;
+        }
+        for (int i = 0; i < enemyBulletNumber; i++)
+        {
+            enemyBulletPool.Enqueue(bulletFactory.CreateBullet(BulletType.ENEMY));
+            enemyBulletLeft++;
         }
     }
 
-    private void CreateBullet()
-    {
-        GameObject bullet = Instantiate(bulletPrefab);
-        bullet.SetActive(false);
-        bullet.transform.SetParent(bulletParent.transform);
-        bulletPool.Enqueue(bullet);
-        bulletLeft++;
-    }
 
-    public GameObject GetBullet(Vector2 position, BulletDirection direction)
+    public GameObject GetBullet(Vector2 position, BulletDirection direction, BulletType type)
     {
-        if (bulletPool.Count < 1)
+        if (playerBulletPool.Count < 1)
         {
-            CreateBullet();
+            playerBulletPool.Enqueue(bulletFactory.CreateBullet(BulletType.PLAYER));
+            playerBulletLeft++;
         }
-        GameObject bullet = bulletPool.Dequeue();
-        bulletFired++;
-        bulletLeft--;
+        if (enemyBulletPool.Count < 1)
+        {
+            enemyBulletPool.Enqueue(bulletFactory.CreateBullet(BulletType.ENEMY));
+            enemyBulletLeft++;
+        }
+
+        GameObject bullet = null;
+
+        switch(type)
+        {
+            case BulletType.PLAYER:
+                bullet = playerBulletPool.Dequeue();
+                playerBulletFired++;
+                playerBulletLeft--;
+                
+                break;
+            case BulletType.ENEMY:
+                bullet = enemyBulletPool.Dequeue();
+                enemyBulletFired++;
+                enemyBulletLeft--;
+                break;
+        }
+
         bullet.SetActive(true);
         bullet.transform.position = position;
-        bullet.GetComponent<BuilletBehavior>().SetDirection(direction);
         return bullet;
     }
 
-    public void ReturnBullet(GameObject bullet)
+    public void ReturnBullet(GameObject bullet, BulletType type)
     {
         bullet.SetActive(false);
-        bulletPool.Enqueue(bullet);
-        bulletFired--;
-        bulletLeft++;
+        switch (type)
+        {
+            case BulletType.PLAYER:
+                playerBulletPool.Enqueue(bullet);
+                playerBulletFired--;
+                playerBulletLeft++;
+
+                break;
+            case BulletType.ENEMY:
+                enemyBulletPool.Enqueue(bullet);
+                enemyBulletFired--;
+                enemyBulletLeft++;
+                break;
+        }
     }
 
 }

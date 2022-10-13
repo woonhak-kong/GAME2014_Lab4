@@ -25,6 +25,7 @@ public class BuilletBehavior : MonoBehaviour
     public float speed;
     
     public ScreenBounds bounds;
+    public BulletType type;
     private Vector3 velocity;
     // Start is called before the first frame update
     void Start()
@@ -70,12 +71,17 @@ public class BuilletBehavior : MonoBehaviour
             (transform.position.y > bounds.vertical.max) ||
             (transform.position.y < bounds.vertical.min))
         {
-            BulletManager.Instance.ReturnBullet(this.gameObject);
+            BulletManager.Instance.ReturnBullet(this.gameObject,type);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        BulletManager.Instance.ReturnBullet(this.gameObject);
+        Debug.Log(collision.tag);
+        if ( (type == BulletType.PLAYER && collision.gameObject.tag == "Enemy")||
+            (type == BulletType.ENEMY && collision.gameObject.tag == "Player"))
+        {
+            BulletManager.Instance.ReturnBullet(this.gameObject, type);
+        }
     }
 }
