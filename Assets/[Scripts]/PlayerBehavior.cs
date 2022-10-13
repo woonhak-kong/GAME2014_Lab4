@@ -4,28 +4,24 @@ using UnityEngine;
 
 public class PlayerBehavior : MonoBehaviour
 {
-    [SerializeField]
-    private float speed = 10;
-
     public Boundary boundary;
-    private Camera camera;
-
-    public ScoreManager scoreManager;
 
     [Header("Bullet Properties")]
     public Transform bulletPosition;
     public float fireRate = 0.2f;
-    
 
-
+    private ScoreManager scoreManager;
+    [SerializeField]
+    private float speed = 10;
+    private Camera mainCamera;
 
     // Start is called before the first frame update
     void Start()
     {
         scoreManager = FindObjectOfType<ScoreManager>();
 
-        transform.position = Vector2.zero;
-        camera = Camera.main;
+        //transform.position = Vector2.zero;
+        mainCamera = Camera.main;
 
         InvokeRepeating("FireBullets", 0.0f, fireRate);
     }
@@ -75,7 +71,7 @@ public class PlayerBehavior : MonoBehaviour
        
         foreach(Touch touch in Input.touches)
         {
-            Vector3 destination = camera.ScreenToWorldPoint(touch.position);
+            Vector3 destination = mainCamera.ScreenToWorldPoint(touch.position);
             //transform.position = new Vector3(destination.x, destination.y);
             //transform.position = touch.position;
             transform.position = Vector2.Lerp(transform.position, destination, Time.deltaTime * speed);

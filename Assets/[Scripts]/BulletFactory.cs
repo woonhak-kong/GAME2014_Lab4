@@ -5,14 +5,14 @@ using UnityEngine;
 public class BulletFactory : MonoBehaviour
 {
     // Bullet Prefab
-    public GameObject bulletPrefab;
+    private GameObject bulletPrefab;
 
     // Sprite Textures
-    public Sprite playerBulletSprite;
-    public Sprite enemyBulletSprite;
+    private Sprite playerBulletSprite;
+    private Sprite enemyBulletSprite;
 
     // Bullet Parent
-    public Transform BulletParent;
+    private Transform BulletParent;
 
     // Start is called before the first frame update
     void Start()

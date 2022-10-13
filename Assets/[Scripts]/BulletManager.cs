@@ -5,9 +5,6 @@ using UnityEngine;
 public class BulletManager : MonoBehaviour
 {
     public static BulletManager Instance { get; private set; }
-
-    public Queue<GameObject> playerBulletPool;
-    public Queue<GameObject> enemyBulletPool;
     public GameObject bulletParent;
     public int playerBulletFired = 0;
     public int playerBulletLeft = 0;
@@ -18,7 +15,9 @@ public class BulletManager : MonoBehaviour
     [Range(10, 200)]
     public int enemyBulletNumber = 50;
 
-    public BulletFactory bulletFactory;
+    private BulletFactory bulletFactory;
+    private Queue<GameObject> playerBulletPool;
+    private Queue<GameObject> enemyBulletPool;
 
     private void Awake()
     {
@@ -87,8 +86,9 @@ public class BulletManager : MonoBehaviour
                 break;
         }
 
-        bullet.SetActive(true);
         bullet.transform.position = position;
+        bullet.SetActive(true);
+        
         return bullet;
     }
 
